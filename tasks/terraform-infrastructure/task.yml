@@ -8,9 +8,13 @@ image_resource:
 
 inputs:
   - name: resource-terraforming-azure
+  - name: resource-azure-pcf-pipeline
+
+outputs:
+  - name: terraform-state-output
 
 run:
-  path: resource-terraforming-azure/terraform-infrastructure/task.sh
+  path: resource-azure-pcf-pipeline/tasks/terraform-infrastructure/task.sh
 
 params:
   AZURE_SUBSCRIPTION_ID:

@@ -7,3 +7,6 @@ pcf_short_env_name: CHANGEME
 pcf_location: CHANGEME
 pcf_opsman_image_uri: CHANGEME
 pcf_dns_suffix: CHANGEME
+storage_account_name: CHANGEME
+storage_account_key: CHANGEME
+container: CHANGEME

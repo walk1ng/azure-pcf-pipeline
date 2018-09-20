@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+ROOT="${PWD}"
+
 # Enter the terraform resource
 cd resource-terraforming-azure
 
@@ -22,3 +24,8 @@ EOF
 terraform init
 terraform plan -out=plan
 terraform apply plan
+
+ls -l
+ls -l ${ROOT}
+cp terraform.tfstate ${ROOT}/terraform-state-output/
+ls -l ${ROOT}/terraform-state-output

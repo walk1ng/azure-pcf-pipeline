@@ -1,4 +1,11 @@
 ---
+
+resource_types:
+- name: azure-blobstore
+  type: docker-image
+  source:
+    repository: pcfabr/azure-blobstore-resource
+
 resources:
 - name: resource-terraforming-azure
   type: git
@@ -12,15 +19,28 @@ resources:
     uri: https://github.com/walk1ng/azure-pcf-pipeline.git
     branch: master
 
+- name: terraform-tfstate
+  type: azure-blobstore
+  source:
+    storage_account_name: {{storage_account_name}}
+    storage_account_key: {{storage_account_key}}
+    container: {{container}}
+    versioned_file: terraform.tfstate
+
+
 jobs:
 - name: job-create-iaas-infra
   public: true
+  ensure:
+    put: terraform-tfstate
+    params:
+      file: terraform-state-output/terraform.tfstate
   plan:
   - aggregate:
     - get: resource-terraforming-azure
     - get: resource-azure-pcf-pipeline
   - task: create-infrastructure
-    file: resource-azure-pcf-pipeline/terraform-infrastructure/task.yml
+    file: resource-azure-pcf-pipeline/tasks/terraform-infrastructure/task.yml
     params:
       AZURE_SUBSCRIPTION_ID: {{azure_subscription_id}}
       AZURE_TENANT_ID: {{azure_tenant_id}}
