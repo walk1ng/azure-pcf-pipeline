@@ -1,0 +1,33 @@
+---
+resources:
+- name: resource-terraforming-azure
+  type: git
+  source:
+    uri: https://github.com/pivotal-cf/terraforming-azure.git
+    branch: master
+
+- name: resource-azure-pcf-pipeline
+  type: git
+  source:
+    uri: https://github.com/walk1ng/azure-pcf-pipeline.git
+    branch: master
+
+jobs:
+- name: job-create-iaas-infra
+  public: true
+  plan:
+  - aggregate:
+    - get: resource-terraforming-azure
+    - get: resource-azure-pcf-pipeline
+  - task: create-infrastructure
+    file: resource-azure-pcf-pipeline/terraform-infrastructure/task.yml
+    params:
+      AZURE_SUBSCRIPTION_ID: {{azure_subscription_id}}
+      AZURE_TENANT_ID: {{azure_tenant_id}}
+      AZURE_CLIENT_ID: {{azure_client_id}}
+      AZURE_CLIENT_SECRET: {{azure_client_secret}}
+      PCF_ENV_NAME: {{pcf_env_name}}
+      PCF_SHORT_ENV_NAME: {{pcf_short_env_name}}
+      PCF_LOCATION: {{pcf_location}}
+      PCF_OPSMAN_IMAGE_URI: {{pcf_opsman_image_uri}}
+      PCF_DNS_SUFFIX: {{pcf_dns_suffix}}

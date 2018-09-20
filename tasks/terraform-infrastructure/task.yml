@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+
+inputs:
+  - name: resource-terraforming-azure
+
+run:
+  path: resource-terraforming-azure/terraform-infrastructure/task.sh
+
+params:
+  AZURE_SUBSCRIPTION_ID:
+  AZURE_TENANT_ID:
+  AZURE_CLIENT_ID:
+  AZURE_CLIENT_SECRET:
+  PCF_ENV_NAME:
+  PCF_SHORT_ENV_NAME:
+  PCF_LOCATION:
+  PCF_OPSMAN_IMAGE_URI:
+  PCF_DNS_SUFFIX:

@@ -1,0 +1,9 @@
+azure_subscription_id: CHANGEME
+azure_tenant_id: CHANGEME
+azure_client_id: CHANGEME
+azure_client_secret: CHANGEME
+pcf_env_name: CHANGEME
+pcf_short_env_name: CHANGEME
+pcf_location: CHANGEME
+pcf_opsman_image_uri: CHANGEME
+pcf_dns_suffix: CHANGEME
