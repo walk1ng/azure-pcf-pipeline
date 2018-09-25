@@ -6,7 +6,9 @@ pcf_env_name: CHANGEME
 pcf_short_env_name: CHANGEME
 pcf_location: CHANGEME
 pcf_opsman_image_uri: CHANGEME
+pcf_opsman_admin_username: CHANGEME
+pcf_opsman_admin_password: CHANGEME
 pcf_dns_suffix: CHANGEME
-storage_account_name: CHANGEME
-storage_account_key: CHANGEME
-container: CHANGEME
+azure_storage_account_name: CHANGEME
+azure_storage_account_key: CHANGEME
+azure_storage_container: CHANGEME

@@ -19,12 +19,12 @@ resources:
     uri: https://github.com/walk1ng/azure-pcf-pipeline.git
     branch: master
 
-- name: terraform-tfstate
+- name: resource-terraform-tfstate
   type: azure-blobstore
   source:
-    storage_account_name: {{storage_account_name}}
-    storage_account_key: {{storage_account_key}}
-    container: {{container}}
+    storage_account_name: {{azure_storage_account_name}}
+    storage_account_key: {{azure_storage_account_key}}
+    container: {{azure_storage_container}}
     versioned_file: terraform.tfstate
 
 
@@ -32,7 +32,7 @@ jobs:
 - name: job-create-iaas-infra
   public: true
   ensure:
-    put: terraform-tfstate
+    put: resource-terraform-tfstate
     params:
       file: terraform-state-output/terraform.tfstate
   plan:
@@ -51,3 +51,18 @@ jobs:
       PCF_LOCATION: {{pcf_location}}
       PCF_OPSMAN_IMAGE_URI: {{pcf_opsman_image_uri}}
       PCF_DNS_SUFFIX: {{pcf_dns_suffix}}
+
+- name: job-config-opsman-auth
+  public: true
+  plan:
+    - aggregate:
+      - get: resource-azure-pcf-pipeline
+      - get: resource-terraform-tfstate
+        passed: [job-create-iaas-infra]
+        trigger: true
+    - task: config-opsman
+      file: resource-azure-pcf-pipeline/tasks/config-opsman/task.yml
+      params:
+        PCF_OPSMAN_ADMIN: {{pcf_opsman_admin_username}}
+        PCF_OPSMAN_ADMIN_PASSWORD: {{pcf_opsman_admin_password}}
+  

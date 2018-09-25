@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+
+inputs:
+  - name: resource-terraform-tfstate
+  - name: resource-azure-pcf-pipeline
+
+run:
+  path: resource-azure-pcf-pipeline/tasks/config-opsman/task.sh
+
+params:
+  PCF_OPSMAN_ADMIN:
+  PCF_OPSMAN_ADMIN_PASSWORD:
