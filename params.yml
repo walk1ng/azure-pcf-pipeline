@@ -1,7 +1,14 @@
+# Azure
+azure_env: CHANGEME
 azure_subscription_id: CHANGEME
 azure_tenant_id: CHANGEME
 azure_client_id: CHANGEME
 azure_client_secret: CHANGEME
+azure_storage_account_name: CHANGEME
+azure_storage_account_key: CHANGEME
+azure_storage_container: CHANGEME
+
+# PCF
 pcf_env_name: CHANGEME
 pcf_short_env_name: CHANGEME
 pcf_location: CHANGEME
@@ -9,6 +16,3 @@ pcf_opsman_image_uri: CHANGEME
 pcf_opsman_admin_username: CHANGEME
 pcf_opsman_admin_password: CHANGEME
 pcf_dns_suffix: CHANGEME
-azure_storage_account_name: CHANGEME
-azure_storage_account_key: CHANGEME
-azure_storage_container: CHANGEME

@@ -66,3 +66,21 @@ jobs:
         PCF_OPSMAN_ADMIN: {{pcf_opsman_admin_username}}
         PCF_OPSMAN_ADMIN_PASSWORD: {{pcf_opsman_admin_password}}
   
+- name: job-config-director
+  public: true
+  plan:
+    - aggregate:
+      - get: resource-terraform-tfstate
+      - get: resource-azure-pcf-pipeline
+        passed: [job-config-opsman-auth]
+        trigger: true
+    - task: config-director
+      file: resource-azure-pcf-pipeline/tasks/config-director/task.yml
+      params:
+        PCF_OPSMAN_ADMIN: {{pcf_opsman_admin_username}}
+        PCF_OPSMAN_ADMIN_PASSWORD: {{pcf_opsman_admin_password}}
+        AZURE_ENV: {{azure_env}}
+        AZURE_SUBSCRIPTION_ID: {{azure_subscription_id}}
+        AZURE_TENANT_ID: {{azure_tenant_id}}
+        AZURE_CLIENT_ID: {{azure_client_id}}
+        AZURE_CLIENT_SECRET: {{azure_client_secret}}
