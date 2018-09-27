@@ -22,11 +22,27 @@ resources:
 - name: resource-terraform-tfstate
   type: azure-blobstore
   source:
-    storage_account_name: {{azure_storage_account_name}}
-    storage_account_key: {{azure_storage_account_key}}
-    container: {{azure_storage_container}}
+    storage_account_name: ((azure_storage_account_name))
+    storage_account_key: ((azure_storage_account_key))
+    container: ((azure_storage_container_tfstate))
     versioned_file: terraform.tfstate
 
+- name: resource-bosh-cpi-src
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry-incubator/bosh-azure-cpi-release.git
+    branch: ((cpi_source_branch))
+    ignore_paths:
+      - .final_builds/**/*.yml
+      - releases/**/*.yml
+
+- name: resource-bosh-cpi-validate-release
+  type: azure-blobstore
+  source:
+    storage_account_name: ((azure_storage_account_name))
+    storage_account_key: ((azure_storage_account_key))
+    container: ((azure_storage_container_cpi))
+    versioned_file: bosh-azure-cpi
 
 jobs:
 - name: job-create-iaas-infra
@@ -42,15 +58,15 @@ jobs:
   - task: create-infrastructure
     file: resource-azure-pcf-pipeline/tasks/terraform-infrastructure/task.yml
     params:
-      AZURE_SUBSCRIPTION_ID: {{azure_subscription_id}}
-      AZURE_TENANT_ID: {{azure_tenant_id}}
-      AZURE_CLIENT_ID: {{azure_client_id}}
-      AZURE_CLIENT_SECRET: {{azure_client_secret}}
-      PCF_ENV_NAME: {{pcf_env_name}}
-      PCF_SHORT_ENV_NAME: {{pcf_short_env_name}}
-      PCF_LOCATION: {{pcf_location}}
-      PCF_OPSMAN_IMAGE_URI: {{pcf_opsman_image_uri}}
-      PCF_DNS_SUFFIX: {{pcf_dns_suffix}}
+      AZURE_SUBSCRIPTION_ID: ((azure_subscription_id))
+      AZURE_TENANT_ID: ((azure_tenant_id))
+      AZURE_CLIENT_ID: ((azure_client_id))
+      AZURE_CLIENT_SECRET: ((azure_client_secret))
+      PCF_ENV_NAME: ((pcf_env_name))
+      PCF_SHORT_ENV_NAME: ((pcf_short_env_name))
+      PCF_LOCATION: ((pcf_location))
+      PCF_OPSMAN_IMAGE_URI: ((pcf_opsman_image_uri))
+      PCF_DNS_SUFFIX: ((pcf_dns_suffix))
 
 - name: job-config-opsman-auth
   public: true
@@ -63,24 +79,41 @@ jobs:
     - task: config-opsman
       file: resource-azure-pcf-pipeline/tasks/config-opsman/task.yml
       params:
-        PCF_OPSMAN_ADMIN: {{pcf_opsman_admin_username}}
-        PCF_OPSMAN_ADMIN_PASSWORD: {{pcf_opsman_admin_password}}
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
   
 - name: job-config-director
   public: true
   plan:
     - aggregate:
-      - get: resource-terraform-tfstate
       - get: resource-azure-pcf-pipeline
+      - get: resource-terraform-tfstate
         passed: [job-config-opsman-auth]
         trigger: true
     - task: config-director
       file: resource-azure-pcf-pipeline/tasks/config-director/task.yml
       params:
-        PCF_OPSMAN_ADMIN: {{pcf_opsman_admin_username}}
-        PCF_OPSMAN_ADMIN_PASSWORD: {{pcf_opsman_admin_password}}
-        AZURE_ENV: {{azure_env}}
-        AZURE_SUBSCRIPTION_ID: {{azure_subscription_id}}
-        AZURE_TENANT_ID: {{azure_tenant_id}}
-        AZURE_CLIENT_ID: {{azure_client_id}}
-        AZURE_CLIENT_SECRET: {{azure_client_secret}}
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        AZURE_ENV: ((azure_env))
+        AZURE_SUBSCRIPTION_ID: ((azure_subscription_id))
+        AZURE_TENANT_ID: ((azure_tenant_id))
+        AZURE_CLIENT_ID: ((azure_client_id))
+        AZURE_CLIENT_SECRET: ((azure_client_secret))
+
+- name: job-build-bosh-azure-cpi
+  public: true
+  ensure:
+    put: resource-bosh-cpi-validate-release
+    params:
+      file: builds/bosh-azure-cpi-((cpi_source_branch)).tgz
+  plan:
+    - aggregate:
+      - get: resource-azure-pcf-pipeline
+        passed: [job-config-director]
+        trigger: true
+      - get: resource-bosh-cpi-src
+    - task: build-cpi
+      file: resource-azure-pcf-pipeline/tasks/build-cpi/task.yml
+      params:
+        CPI_SOURCE_BRANCH: ((cpi_source_branch))
