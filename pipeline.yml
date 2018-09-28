@@ -117,3 +117,16 @@ jobs:
       file: resource-azure-pcf-pipeline/tasks/build-cpi/task.yml
       params:
         CPI_SOURCE_BRANCH: ((cpi_source_branch))
+
+- name: job-config-bosh-azure-cpi
+  public: true
+  plan:
+    - aggregate:
+      - get: resource-azure-pcf-pipeline
+      - get: resource-terraform-tfstate
+      - get: resource-bosh-cpi-validate-release
+        passed: [job-build-bosh-azure-cpi]
+        trigger: true
+    - task: config-cpi
+      file: resource-azure-pcf-pipeline/tasks/config-cpi/task.yml
+
