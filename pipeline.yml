@@ -6,6 +6,12 @@ resource_types:
   source:
     repository: pcfabr/azure-blobstore-resource
 
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
 resources:
 - name: resource-terraforming-azure
   type: git
@@ -43,6 +49,13 @@ resources:
     storage_account_key: ((azure_storage_account_key))
     container: ((azure_storage_container_cpi))
     versioned_file: bosh-azure-cpi
+
+- name: resource-pivnet-small-footprint-pas
+  type: pivnet
+  source:
+    api_token: ((pivnet_token))
+    product_slug: elastic-runtime
+    product_version: ((srt_major_minor_version))
 
 jobs:
 - name: job-create-iaas-infra
@@ -143,3 +156,25 @@ jobs:
       params:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+
+- name: job-upload-srt
+  public: true
+  plan:
+    - aggregate:
+      - get: resource-azure-pcf-pipeline
+      - get: resource-terraform-tfstate
+      - get: resource-pivnet-product
+        resource: resource-pivnet-small-footprint-pas
+        params:
+          globs: ["srt-*.pivotal"]
+        passed: [job-deploy-director]
+        trigger: true
+    - task: upload-srt-tile
+      file: resource-azure-pcf-pipeline/tasks/upload-product-and-stemcell/task.yml
+      params:
+        OPSMAN_CLIENT_ID: ""
+        OPSMAN_CLIENT_SECRET: ""
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        PIVNET_API_TOKEN: ((pivnet_token))
+        IAAS: "azure"
