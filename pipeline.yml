@@ -163,12 +163,12 @@ jobs:
     - aggregate:
       - get: resource-azure-pcf-pipeline
       - get: resource-terraform-tfstate
+        passed: [job-deploy-director]
+        trigger: true
       - get: resource-pivnet-product
         resource: resource-pivnet-small-footprint-pas
         params:
           globs: ["srt-*.pivotal"]
-        passed: [job-deploy-director]
-        trigger: true
     - task: upload-srt-tile
       file: resource-azure-pcf-pipeline/tasks/upload-product-and-stemcell/task.yml
       params:
