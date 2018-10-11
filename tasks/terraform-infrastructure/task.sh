@@ -27,5 +27,8 @@ terraform apply plan
 
 ls -l
 ls -l ${ROOT}
-cp terraform.tfstate ${ROOT}/terraform-state-output/
-ls -l ${ROOT}/terraform-state-output
+cp terraform.tfstate ${ROOT}/terraform-tfstate/
+ls -l ${ROOT}/terraform-tfstate
+cd ${ROOT}
+pwd
+ls -lR

@@ -36,7 +36,7 @@ resources:
 - name: bosh-cpi-src
   type: git
   source:
-    uri: https://github.com/cloudfoundry-incubator/bosh-azure-cpi-release.git
+    uri: https://github.com/cloudfoundry/bosh-azure-cpi-release.git
     branch: ((cpi_source_branch))
     ignore_paths:
       - .final_builds/**/*.yml
@@ -63,7 +63,7 @@ jobs:
   ensure:
     put: terraform-tfstate
     params:
-      file: terraform-state-output/terraform.tfstate
+      file: terraform-tfstate/terraform.tfstate
   plan:
   - aggregate:
     - get: terraforming-azure
@@ -178,3 +178,12 @@ jobs:
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
         IAAS: "azure"
+    - task: stage-srt-tile
+      file: azure-pcf-pipeline/tasks/stage-product/task.yml
+      params:
+        OPSMAN_CLIENT_ID: ""
+        OPSMAN_CLIENT_SECRET: ""
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        PRODUCT_NAME: "cf"
+        PRODUCT_VERSION: ((srt_major_minor_version))

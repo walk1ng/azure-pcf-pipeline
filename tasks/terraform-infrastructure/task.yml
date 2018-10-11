@@ -11,7 +11,7 @@ inputs:
   - name: azure-pcf-pipeline
 
 outputs:
-  - name: terraform-state-output
+  - name: terraform-tfstate
 
 run:
   path: azure-pcf-pipeline/tasks/terraform-infrastructure/task.sh
