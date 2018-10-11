@@ -3,14 +3,14 @@
 set -eu
 
 # get values from terraform.tfstate
-OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
+OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
 
 echo "=============================================================================================="
 echo "Uploading product, stemcell to @ https://${OPSMAN_DOMAIN_OR_IP_ADDRESS} ..."
 echo "=============================================================================================="
 
 STEMCELL_VERSION=$(
-  cat ./resource-pivnet-product/metadata.json |
+  cat ./pivnet-product/metadata.json |
   jq --raw-output \
     '
     [
@@ -59,7 +59,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
         else
           "stemcells"
         end
-        ' < resource-pivnet-product/metadata.json
+        ' < pivnet-product/metadata.json
     )
 
     pivnet-cli login --api-token="$PIVNET_API_TOKEN"
@@ -84,7 +84,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
 fi
 
 # Should the slug contain more than one product, pick only the first.
-FILE_PATH=`find ./resource-pivnet-product -name *.pivotal | sort | head -1`
+FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
 om-linux -t https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \

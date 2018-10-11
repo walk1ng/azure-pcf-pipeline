@@ -13,19 +13,19 @@ resource_types:
     tag: latest-final
 
 resources:
-- name: resource-terraforming-azure
+- name: terraforming-azure
   type: git
   source:
     uri: https://github.com/pivotal-cf/terraforming-azure.git
     branch: master
 
-- name: resource-azure-pcf-pipeline
+- name: azure-pcf-pipeline
   type: git
   source:
     uri: https://github.com/walk1ng/azure-pcf-pipeline.git
     branch: master
 
-- name: resource-terraform-tfstate
+- name: terraform-tfstate
   type: azure-blobstore
   source:
     storage_account_name: ((azure_storage_account_name))
@@ -33,7 +33,7 @@ resources:
     container: ((azure_storage_container_tfstate))
     versioned_file: terraform.tfstate
 
-- name: resource-bosh-cpi-src
+- name: bosh-cpi-src
   type: git
   source:
     uri: https://github.com/cloudfoundry-incubator/bosh-azure-cpi-release.git
@@ -42,7 +42,7 @@ resources:
       - .final_builds/**/*.yml
       - releases/**/*.yml
 
-- name: resource-bosh-cpi-validate-release
+- name: bosh-cpi-validate-release
   type: azure-blobstore
   source:
     storage_account_name: ((azure_storage_account_name))
@@ -50,7 +50,7 @@ resources:
     container: ((azure_storage_container_cpi))
     versioned_file: bosh-azure-cpi
 
-- name: resource-pivnet-small-footprint-pas
+- name: pivnet-small-footprint-pas
   type: pivnet
   source:
     api_token: ((pivnet_token))
@@ -58,18 +58,18 @@ resources:
     product_version: ((srt_major_minor_version))
 
 jobs:
-- name: job-create-iaas-infra
+- name: create-iaas-infra
   public: true
   ensure:
-    put: resource-terraform-tfstate
+    put: terraform-tfstate
     params:
       file: terraform-state-output/terraform.tfstate
   plan:
   - aggregate:
-    - get: resource-terraforming-azure
-    - get: resource-azure-pcf-pipeline
+    - get: terraforming-azure
+    - get: azure-pcf-pipeline
   - task: create-infrastructure
-    file: resource-azure-pcf-pipeline/tasks/terraform-infrastructure/task.yml
+    file: azure-pcf-pipeline/tasks/terraform-infrastructure/task.yml
     params:
       AZURE_SUBSCRIPTION_ID: ((azure_subscription_id))
       AZURE_TENANT_ID: ((azure_tenant_id))
@@ -81,30 +81,30 @@ jobs:
       PCF_OPSMAN_IMAGE_URI: ((pcf_opsman_image_uri))
       PCF_DNS_SUFFIX: ((pcf_dns_suffix))
 
-- name: job-config-opsman-auth
+- name: config-opsman-auth
   public: true
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-      - get: resource-terraform-tfstate
-        passed: [job-create-iaas-infra]
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [create-iaas-infra]
         trigger: true
     - task: config-opsman
-      file: resource-azure-pcf-pipeline/tasks/config-opsman/task.yml
+      file: azure-pcf-pipeline/tasks/config-opsman/task.yml
       params:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
   
-- name: job-config-director
+- name: config-director
   public: true
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-      - get: resource-terraform-tfstate
-        passed: [job-config-opsman-auth]
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [config-opsman-auth]
         trigger: true
     - task: config-director
-      file: resource-azure-pcf-pipeline/tasks/config-director/task.yml
+      file: azure-pcf-pipeline/tasks/config-director/task.yml
       params:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
@@ -114,63 +114,63 @@ jobs:
         AZURE_CLIENT_ID: ((azure_client_id))
         AZURE_CLIENT_SECRET: ((azure_client_secret))
 
-- name: job-build-bosh-azure-cpi
+- name: build-bosh-azure-cpi
   public: true
   ensure:
-    put: resource-bosh-cpi-validate-release
+    put: bosh-cpi-validate-release
     params:
       file: builds/bosh-azure-cpi-((cpi_source_branch)).tgz
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-        passed: [job-config-director]
+      - get: azure-pcf-pipeline
+        passed: [config-director]
         trigger: true
-      - get: resource-bosh-cpi-src
+      - get: bosh-cpi-src
     - task: build-cpi
-      file: resource-azure-pcf-pipeline/tasks/build-cpi/task.yml
+      file: azure-pcf-pipeline/tasks/build-cpi/task.yml
       params:
         CPI_SOURCE_BRANCH: ((cpi_source_branch))
 
-- name: job-config-bosh-azure-cpi
+- name: config-bosh-azure-cpi
   public: true
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-      - get: resource-terraform-tfstate
-      - get: resource-bosh-cpi-validate-release
-        passed: [job-build-bosh-azure-cpi]
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+      - get: bosh-cpi-validate-release
+        passed: [build-bosh-azure-cpi]
         trigger: true
     - task: config-cpi
-      file: resource-azure-pcf-pipeline/tasks/config-cpi/task.yml
+      file: azure-pcf-pipeline/tasks/config-cpi/task.yml
 
-- name: job-deploy-director
+- name: deploy-director
   public: true
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-      - get: resource-terraform-tfstate
-        passed: [job-config-bosh-azure-cpi]
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [config-bosh-azure-cpi]
         trigger: true
     - task: deploy-director
-      file: resource-azure-pcf-pipeline/tasks/deploy-director/task.yml
+      file: azure-pcf-pipeline/tasks/deploy-director/task.yml
       params:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
 
-- name: job-upload-srt
+- name: upload-srt
   public: true
   plan:
     - aggregate:
-      - get: resource-azure-pcf-pipeline
-      - get: resource-terraform-tfstate
-        passed: [job-deploy-director]
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [deploy-director]
         trigger: true
-      - get: resource-pivnet-product
-        resource: resource-pivnet-small-footprint-pas
+      - get: pivnet-product
+        resource: pivnet-small-footprint-pas
         params:
           globs: ["srt-*.pivotal"]
     - task: upload-srt-tile
-      file: resource-azure-pcf-pipeline/tasks/upload-product-and-stemcell/task.yml
+      file: azure-pcf-pipeline/tasks/upload-product-and-stemcell/task.yml
       params:
         OPSMAN_CLIENT_ID: ""
         OPSMAN_CLIENT_SECRET: ""

@@ -4,7 +4,7 @@ set -e
 ROOT="${PWD}"
 
 # Enter the terraform resource
-cd resource-terraforming-azure
+cd terraforming-azure
 
 # Generate tfvars file
 cat > terraform.tfvars << EOF

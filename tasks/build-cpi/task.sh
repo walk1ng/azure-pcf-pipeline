@@ -6,7 +6,7 @@ echo "Building BOSH Azure CPI release on ${CPI_SOURCE_BRANCH} branch ..."
 echo "=============================================================================================="
 
 export TERM=xterm
-cd resource-bosh-cpi-src/
+cd bosh-cpi-src/
 echo "Check ${CPI_SOURCE_BRANCH} branch"
 git checkout ${CPI_SOURCE_BRANCH}
 git log -3

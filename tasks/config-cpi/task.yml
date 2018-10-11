@@ -7,9 +7,9 @@ image_resource:
     repository: pcfnorm/rootfs
 
 inputs:
-  - name: resource-terraform-tfstate
-  - name: resource-azure-pcf-pipeline
-  - name: resource-bosh-cpi-validate-release
+  - name: terraform-tfstate
+  - name: azure-pcf-pipeline
+  - name: bosh-cpi-validate-release
 
 run:
-  path: resource-azure-pcf-pipeline/tasks/config-cpi/task.sh
+  path: azure-pcf-pipeline/tasks/config-cpi/task.sh

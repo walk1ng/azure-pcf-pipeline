@@ -7,14 +7,14 @@ image_resource:
     repository: concourse/bosh-cli
 
 inputs:
-  - name: resource-azure-pcf-pipeline
-  - name: resource-bosh-cpi-src
+  - name: azure-pcf-pipeline
+  - name: bosh-cpi-src
 
 outputs:
   - name: builds
 
 run:
-  path: resource-azure-pcf-pipeline/tasks/build-cpi/task.sh
+  path: azure-pcf-pipeline/tasks/build-cpi/task.sh
 
 params:
   CPI_SOURCE_BRANCH:

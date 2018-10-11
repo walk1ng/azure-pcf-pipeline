@@ -2,23 +2,23 @@
 set -eu
 
 # get values from terraform.tfstate
-OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
-AZURE_TERRAFORM_PREFIX=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.pcf_resource_group_name.value'`
-BOSH_STORAGE_ACCOUNT_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.bosh_root_storage_account.value'`
-DEPLOYMENT_STORAGE_ACCOUNT_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.wildcard_vm_storage_account.value'`
-DEFAULT_SECURITY_GROUP=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.bosh_deployed_vms_security_group_name.value'`
-PCF_SSH_KEY_PUB=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_ssh_public_key.value'`
-PCF_SSH_KEY_PRIV=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_ssh_private_key.value'`
-NETWORK_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.network_name.value'`
-MANAGEMENT_SUBNET_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_name.value'`
-MANAGEMENT_SUBNET_CIDRS=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_cidrs.value[0]'`
-MANAGEMENT_SUBNET_GATEWAY=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_gateway.value'`
-PAS_SUBNET_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_name.value'`
-PAS_SUBNET_CIDRS=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_cidrs.value[0]'`
-PAS_SUBNET_GATEWAY=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_gateway.value'`
-SERVICES_SUBNET_NAME=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_name.value'`
-SERVICES_SUBNET_CIDRS=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_cidrs.value[0]'`
-SERVICES_SUBNET_GATEWAY=`terraform output -state=./resource-terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_gateway.value'`
+OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
+AZURE_TERRAFORM_PREFIX=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.pcf_resource_group_name.value'`
+BOSH_STORAGE_ACCOUNT_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.bosh_root_storage_account.value'`
+DEPLOYMENT_STORAGE_ACCOUNT_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.wildcard_vm_storage_account.value'`
+DEFAULT_SECURITY_GROUP=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.bosh_deployed_vms_security_group_name.value'`
+PCF_SSH_KEY_PUB=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_ssh_public_key.value'`
+PCF_SSH_KEY_PRIV=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_ssh_private_key.value'`
+NETWORK_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.network_name.value'`
+MANAGEMENT_SUBNET_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_name.value'`
+MANAGEMENT_SUBNET_CIDRS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_cidrs.value[0]'`
+MANAGEMENT_SUBNET_GATEWAY=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.management_subnet_gateway.value'`
+PAS_SUBNET_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_name.value'`
+PAS_SUBNET_CIDRS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_cidrs.value[0]'`
+PAS_SUBNET_GATEWAY=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.pas_subnet_gateway.value'`
+SERVICES_SUBNET_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_name.value'`
+SERVICES_SUBNET_CIDRS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_cidrs.value[0]'`
+SERVICES_SUBNET_GATEWAY=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.services_subnet_gateway.value'`
 DNS="168.63.129.16"
 
 

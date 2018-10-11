@@ -7,11 +7,11 @@ image_resource:
     repository: pcfnorm/rootfs
 
 inputs:
-  - name: resource-terraform-tfstate
-  - name: resource-azure-pcf-pipeline
+  - name: terraform-tfstate
+  - name: azure-pcf-pipeline
 
 run:
-  path: resource-azure-pcf-pipeline/tasks/config-director/task.sh
+  path: azure-pcf-pipeline/tasks/config-director/task.sh
 
 params:
   PCF_OPSMAN_ADMIN:
