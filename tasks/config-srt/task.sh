@@ -4,9 +4,9 @@ set -eu
 source azure-pcf-pipeline/functions/generate_cert.sh
 
 # get values from terraform.tfstate
-OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
-WEB_LB_NAME=`terraform output -state=terraform-tfstate/terraform.tfstate -json | jq -r '.web_lb_name.value'`
-WEB_LB_PUBLIC_IP=`terraform state show azurerm_public_ip.web-lb-public-ip -state=terraform-tfstate/terraform.tfstate | grep '^ip_address' | awk '{print $3}'`
+OPSMAN_DOMAIN_OR_IP_ADDRESS=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.ops_manager_public_ip.value'`
+WEB_LB_NAME=`terraform output -state=./terraform-tfstate/terraform.tfstate -json | jq -r '.web_lb_name.value'`
+WEB_LB_PUBLIC_IP=`terraform state show -state=./terraform-tfstate/terraform.tfstate azurerm_public_ip.web-lb-public-ip | grep '^ip_address' | awk '{print $3}'`
 SYSTEM_DOMAIN="system.${WEB_LB_PUBLIC_IP}.xip.io"
 APPS_DOMAIN="apps.${WEB_LB_PUBLIC_IP}.xip.io"
 
