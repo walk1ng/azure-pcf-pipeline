@@ -188,20 +188,20 @@ jobs:
         PRODUCT_NAME: "cf"
         PRODUCT_VERSION: ((srt_major_minor_version))
 
-  - name: configure-srt
-    public: true
-    plan:
-      - aggregate:
-        - get: azure-pcf-pipeline
-        - get: terraform-tfstate
-          passed: [upload-srt]
-          trigger: true
-      - task: configure-srt-tile
-        file: azure-pcf-pipeline/tasks/config-srt/task.yml
-        params:
-          OPSMAN_CLIENT_ID: ""
-          OPSMAN_CLIENT_SECRET: ""
-          PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
-          PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
-          MYSQL_MONITOR_RECIPIENT_EMAIL: ((pcf_srt_mysql_monitor_recipient_email))
+- name: configure-srt
+  public: true
+  plan:
+    - aggregate:
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [upload-srt]
+        trigger: true
+    - task: configure-srt-tile
+      file: azure-pcf-pipeline/tasks/config-srt/task.yml
+      params:
+        OPSMAN_CLIENT_ID: ""
+        OPSMAN_CLIENT_SECRET: ""
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        MYSQL_MONITOR_RECIPIENT_EMAIL: ((pcf_srt_mysql_monitor_recipient_email))
           
