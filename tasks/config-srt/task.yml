@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+
+inputs:
+  - name: terraform-tfstate
+  - name: azure-pcf-pipeline
+
+run:
+  path: azure-pcf-pipeline/tasks/config-srt/task.sh
+
+params:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  PCF_OPSMAN_ADMIN:
+  PCF_OPSMAN_ADMIN_PASSWORD:
+  MYSQL_MONITOR_RECIPIENT_EMAIL:

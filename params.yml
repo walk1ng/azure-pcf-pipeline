@@ -18,6 +18,7 @@ pcf_opsman_admin_username: CHANGEME
 pcf_opsman_admin_password: CHANGEME
 pcf_dns_suffix: CHANGEME
 srt_major_minor_version: CHANGEME
+pcf_srt_mysql_monitor_recipient_email: CHANGEME
 
 # CPI
 cpi_source_branch: CHANGEME
