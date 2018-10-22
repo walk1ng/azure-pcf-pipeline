@@ -152,10 +152,11 @@ jobs:
         passed: [config-bosh-azure-cpi]
         trigger: true
     - task: deploy-director
-      file: azure-pcf-pipeline/tasks/deploy-director/task.yml
+      file: azure-pcf-pipeline/tasks/apply-changes/task.yml
       params:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        DEPLOYMENT_NAME: "BOSH director"
 
 - name: upload-srt
   public: true
@@ -204,4 +205,18 @@ jobs:
         PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
         PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
         MYSQL_MONITOR_RECIPIENT_EMAIL: ((pcf_srt_mysql_monitor_recipient_email))
-          
+
+- name: deploy-srt
+  public: true
+  plan:
+    - aggregate:
+      - get: azure-pcf-pipeline
+      - get: terraform-tfstate
+        passed: [configure-srt]
+        trigger: true
+    - task: deploy-srt
+      file: azure-pcf-pipeline/tasks/apply-changes/task.yml
+      params:
+        PCF_OPSMAN_ADMIN: ((pcf_opsman_admin_username))
+        PCF_OPSMAN_ADMIN_PASSWORD: ((pcf_opsman_admin_password))
+        DEPLOYMENT_NAME: "PCF Small Footprint"
