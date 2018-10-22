@@ -17,7 +17,7 @@ echo "==========================================================================
 credhub_encryption_keys_json="{
   \"name\": \"credhubkey1\",
   \"key\":{
-      \"secret\": \"credhubsecret1\"
+      \"secret\": \"credhubsecret1abcdef\"
    },
   \"primary\": true
 }"
