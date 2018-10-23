@@ -9,6 +9,7 @@ image_resource:
 inputs:
   - name: terraforming-azure
   - name: azure-pcf-pipeline
+  - name: pivnet-opsman
 
 outputs:
   - name: terraform-tfstate
@@ -24,5 +25,4 @@ params:
   PCF_ENV_NAME:
   PCF_SHORT_ENV_NAME:
   PCF_LOCATION:
-  PCF_OPSMAN_IMAGE_URI:
   PCF_DNS_SUFFIX:

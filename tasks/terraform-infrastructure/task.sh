@@ -1,10 +1,22 @@
 #!/bin/bash
 set -e
 
+source azure-pcf-pipeline/functions/parse_opsman_image_url_region.sh
 ROOT="${PWD}"
+
+# Get image url of opsman according to region
+echo "=============================================================================================="
+echo "Getting Azure Ops Manager VHD URI from Pivnet YML...."
+echo "=============================================================================================="
+pcf_opsman_image_vhd=$(parseOpsImageURLWithRegion "${PCF_LOCATION}" "./pivnet-opsman/*Azure.yml")
+echo "Found Azure OpsMan Image @ $pcf_opsman_image_vhd ...."
 
 # Enter the terraform resource
 cd terraforming-azure
+
+echo "=============================================================================================="
+echo "Terraforming Azure resources...."
+echo "=============================================================================================="
 
 # Generate tfvars file
 cat > terraform.tfvars << EOF
@@ -16,19 +28,15 @@ client_secret         = "${AZURE_CLIENT_SECRET}"
 env_name              = "${PCF_ENV_NAME}"
 env_short_name        = "${PCF_SHORT_ENV_NAME}"
 location              = "${PCF_LOCATION}"
-ops_manager_image_uri = "${PCF_OPSMAN_IMAGE_URI}"
+ops_manager_image_uri = "${pcf_opsman_image_vhd}"
 dns_suffix            = "${PCF_DNS_SUFFIX}"
 EOF
+
+ls -lR
+
+cat terraform.tfvars
 
 # Create Azure infrastructure
 terraform init
 terraform plan -out=plan
 terraform apply plan
-
-ls -l
-ls -l ${ROOT}
-cp terraform.tfstate ${ROOT}/terraform-tfstate/
-ls -l ${ROOT}/terraform-tfstate
-cd ${ROOT}
-pwd
-ls -lR

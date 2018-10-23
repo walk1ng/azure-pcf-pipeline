@@ -13,11 +13,11 @@ azure_storage_container_cpi: CHANGEME
 pcf_env_name: CHANGEME
 pcf_short_env_name: CHANGEME
 pcf_location: CHANGEME
-pcf_opsman_image_uri: CHANGEME
 pcf_opsman_admin_username: CHANGEME
 pcf_opsman_admin_password: CHANGEME
 pcf_dns_suffix: CHANGEME
 srt_major_minor_version: CHANGEME
+opsman_major_minor_version: CHANGEME
 pcf_srt_mysql_monitor_recipient_email: CHANGEME
 
 # CPI
