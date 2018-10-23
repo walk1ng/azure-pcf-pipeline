@@ -95,8 +95,9 @@ cf_properties=$(
       ".properties.haproxy_forward_tls": {
           "value": "disable"
       },
-      ".properties.route_services.enable.ignore_ssl_cert_verification": {
-          "value": false
+      # disable ssl cert verification for this environment
+      ".ha_proxy.skip_cert_verify": {
+        "value": true
       },
       # Application Security Groups
       ".properties.security_acknowledgement": {
