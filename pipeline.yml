@@ -14,10 +14,10 @@ resource_types:
 
 resources:
 - name: terraforming-azure
-  type: git
+  type: github-release
   source:
-    uri: https://github.com/pivotal-cf/terraforming-azure.git
-    branch: master
+    user: pivotal-cf
+    repository: terraforming-azure
 
 - name: azure-pcf-pipeline
   type: git
@@ -74,6 +74,8 @@ jobs:
   plan:
   - aggregate:
     - get: terraforming-azure
+      params:
+        include_source_tarball: true
     - get: azure-pcf-pipeline
     - get: pivnet-opsman
       params:

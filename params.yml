@@ -25,3 +25,6 @@ cpi_source_branch: CHANGEME
 
 # Pivotal network
 pivnet_token: CHANGEME
+
+# Terraform
+terraforming_azure_release_tag: CHANGEME
